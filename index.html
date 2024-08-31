@@ -18,22 +18,27 @@
             overflow: hidden;
             touch-action: manipulation;
         }
-        .balance, .shop-button {
+        .balance-container {
             position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #333;
+            font-size: 18px;
+        }
+        .shop-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
             font-size: 18px;
             background-color: rgba(255, 255, 255, 0.8);
             padding: 10px 20px;
             border-radius: 50px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             color: #333;
-        }
-        .balance {
-            top: 10px;
-            right: 10px;
-        }
-        .shop-button {
-            top: 10px;
-            left: 10px;
             cursor: pointer;
         }
         .shop {
@@ -126,7 +131,10 @@
     </style>
 </head>
 <body>
-    <div class="balance">Баланс: <span id="balance">0</span> монет</div>
+    <div class="balance-container">
+        Баланс: <span id="balance">0</span> монет<br>
+        Доход в час: <span id="income">0</span> монет
+    </div>
     <div class="shop-button" onclick="toggleShop()">Магазин</div>
 
     <div class="shop" id="shop">
@@ -273,17 +281,19 @@
                 balance -= price;
                 income += hourlyIncome;
                 document.getElementById('balance').textContent = balance;
+                document.getElementById('income').textContent = income;
                 alert('Покупка успешна! Ваш новый доход: ' + income + ' монет/час.');
             } else {
                 alert('Недостаточно монет для покупки.');
             }
         }
 
-        // Функция для добавления дохода каждый час
+        // Функция для добавления дохода каждые 3 секунды
         setInterval(() => {
-            balance += income;
-            document.getElementById('balance').textContent = balance;
-        }, 3600000); // 1 час = 3600000 миллисекунд
+            const incomePerInterval = income / (60 * 60 / 3); // доход за 3 секунды
+            balance += incomePerInterval;
+            document.getElementById('balance').textContent = Math.floor(balance); // округляем баланс до целого числа
+        }, 3000); // каждые 3 секунды
 
     </script>
 </body>
