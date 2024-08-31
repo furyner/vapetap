@@ -16,22 +16,64 @@
             margin: 0;
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             overflow: hidden;
-            touch-action: manipulation; /* Предотвращение масштабирования и прокручивания */
+            touch-action: manipulation;
         }
-        .balance {
+        .balance, .shop-button {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
+            font-size: 18px;
             background-color: rgba(255, 255, 255, 0.8);
             padding: 10px 20px;
             border-radius: 50px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             color: #333;
         }
+        .balance {
+            top: 10px;
+            right: 10px;
+        }
+        .shop-button {
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+        .shop {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            width: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        .shop-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .shop-item img {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+        .shop-item button {
+            padding: 5px 10px;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .shop-item button:disabled {
+            background-color: gray;
+        }
         .tap-object {
             width: 200px;
-            height: 300px; /* Увеличил высоту для более точного позиционирования */
+            height: 300px;
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s ease;
@@ -61,7 +103,7 @@
         }
         .smoke {
             position: absolute;
-            top: -20px; /* Начальная позиция дыма - чуть выше одноразки */
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
             width: 20px;
@@ -85,12 +127,91 @@
 </head>
 <body>
     <div class="balance">Баланс: <span id="balance">0</span> монет</div>
+    <div class="shop-button" onclick="toggleShop()">Магазин</div>
+
+    <div class="shop" id="shop">
+        <!-- Список товаров -->
+        <div class="shop-item">
+            <img src="1800.jpg" alt="Вака на 1800 затяжек">
+            <div>
+                <strong>Вака на 1800 затяжек</strong><br>
+                Цена: 300 монет<br>
+                Доход: +50/час
+            </div>
+            <button onclick="buyItem(300, 50)">Купить</button>
+        </div>
+        <div class="shop-item">
+            <img src="2200.jpg" alt="Вака на 2200 затяжек">
+            <div>
+                <strong>Вака на 2200 затяжек</strong><br>
+                Цена: 380 монет<br>
+                Доход: +75/час
+            </div>
+            <button onclick="buyItem(380, 75)">Купить</button>
+        </div>
+        <div class="shop-item">
+            <img src="mirror.jpg" alt="Вака Mirror">
+            <div>
+                <strong>Вака Mirror</strong><br>
+                Цена: 450 монет<br>
+                Доход: +90/час
+            </div>
+            <button onclick="buyItem(450, 90)">Купить</button>
+        </div>
+        <div class="shop-item">
+            <img src="6000.jpg" alt="Вака на 6000 затяжек">
+            <div>
+                <strong>Вака на 6000 затяжек</strong><br>
+                Цена: 570 монет<br>
+                Доход: +128/час
+            </div>
+            <button onclick="buyItem(570, 128)">Купить</button>
+        </div>
+        <div class="shop-item">
+            <img src="8000.jpg" alt="Вака на 8000 затяжек">
+            <div>
+                <strong>Вака на 8000 затяжек</strong><br>
+                Цена: 800 монет<br>
+                Доход: +210/час
+            </div>
+            <button onclick="buyItem(800, 210)">Купить</button>
+        </div>
+        <div class="shop-item">
+            <img src="10000.jpg" alt="Вака на 10000 затяжек">
+            <div>
+                <strong>Вака на 10000 затяжек</strong><br>
+                Цена: 1000 монет<br>
+                Доход: +440/час
+            </div>
+            <button onclick="buyItem(1000, 440)">Купить</button>
+        </div>
+        <div class="shop-item">
+            <img src="20000.jpg" alt="Вака на 20000 затяжек">
+            <div>
+                <strong>Вака на 20000 затяжек</strong><br>
+                Цена: 1800 монет<br>
+                Доход: +562/час
+            </div>
+            <button onclick="buyItem(1800, 562)">Купить</button>
+        </div>
+        <div class="shop-item">
+            <img src="25000.jpg" alt="Вака на 25000 затяжек">
+            <div>
+                <strong>Вака на 25000 затяжек</strong><br>
+                Цена: 2500 монет<br>
+                Доход: +710/час
+            </div>
+            <button onclick="buyItem(2500, 710)">Купить</button>
+        </div>
+    </div>
+
     <div class="tap-object-wrapper">
         <img src="1.png" class="tap-object" alt="Disposable Vape" onclick="emitSmoke(event)">
     </div>
 
     <script>
         let balance = 0;
+        let income = 0;
 
         const tapObject = document.querySelector('.tap-object');
 
@@ -128,15 +249,42 @@
             incrementBalance();
             const smoke = document.createElement('div');
             smoke.classList.add('smoke');
-            const vapeRect = tapObject.getBoundingClientRect(); // Получаем размеры и позицию одноразки
+            const vapeRect = tapObject.getBoundingClientRect();
             smoke.style.left = `${vapeRect.left + vapeRect.width / 2}px`;
-            smoke.style.top = `${vapeRect.top - 20}px`; // Делаем стартовую позицию чуть выше одноразки
+            smoke.style.top = `${vapeRect.top - 20}px`;
             document.body.appendChild(smoke);
 
             smoke.addEventListener('animationend', () => {
                 smoke.remove();
             });
         }
+
+        function toggleShop() {
+            const shop = document.getElementById('shop');
+            if (shop.style.display === 'none' || shop.style.display === '') {
+                shop.style.display = 'block';
+            } else {
+                shop.style.display = 'none';
+            }
+        }
+
+        function buyItem(price, hourlyIncome) {
+            if (balance >= price) {
+                balance -= price;
+                income += hourlyIncome;
+                document.getElementById('balance').textContent = balance;
+                alert('Покупка успешна! Ваш новый доход: ' + income + ' монет/час.');
+            } else {
+                alert('Недостаточно монет для покупки.');
+            }
+        }
+
+        // Функция для добавления дохода каждый час
+        setInterval(() => {
+            balance += income;
+            document.getElementById('balance').textContent = balance;
+        }, 3600000); // 1 час = 3600000 миллисекунд
+
     </script>
 </body>
 </html>
