@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Simple Tap Game</title>
     <style>
         body {
@@ -16,6 +16,7 @@
             margin: 0;
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             overflow: hidden;
+            touch-action: manipulation; /* Предотвращение масштабирования и прокручивания */
         }
         .balance {
             position: absolute;
@@ -35,7 +36,7 @@
             user-select: none;
             transition: transform 0.1s ease;
         }
-        .tap-object:active {
+        .tap-object.active {
             transform: scale(0.9);
         }
         .particle {
@@ -61,15 +62,29 @@
 </head>
 <body>
     <div class="balance">Баланс: <span id="balance">0</span> монет</div>
-    <img src="1.png" class="tap-object" onclick="incrementBalance()" alt="Disposable Vape">
+    <img src="1.png" class="tap-object" alt="Disposable Vape">
 
     <script>
         let balance = 0;
+
+        const tapObject = document.querySelector('.tap-object');
+
+        tapObject.addEventListener('click', incrementBalance);
+        tapObject.addEventListener('touchstart', handleTouchStart);
+        tapObject.addEventListener('touchend', handleTouchEnd);
 
         function incrementBalance() {
             balance += 1;
             document.getElementById('balance').textContent = balance;
             createParticleEffect(event.clientX, event.clientY);
+        }
+
+        function handleTouchStart() {
+            tapObject.classList.add('active');
+        }
+
+        function handleTouchEnd() {
+            tapObject.classList.remove('active');
         }
 
         function createParticleEffect(x, y) {
