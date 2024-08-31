@@ -218,6 +218,7 @@
     </div>
 
     <script>
+        let playerId = 'unique_player_id'; // Уникальный ID игрока
         let balance = 0;
         let income = 0;
 
@@ -227,10 +228,30 @@
         tapObject.addEventListener('touchstart', handleTouchStart);
         tapObject.addEventListener('touchend', handleTouchEnd);
 
+        // Функция для получения данных игрока с сервера
+        async function getPlayerData() {
+            const response = await fetch(`http://localhost:3000/player/${playerId}`);
+            const data = await response.json();
+            balance = data.balance;
+            income = data.income;
+            document.getElementById('balance').textContent = balance;
+            document.getElementById('income').textContent = income;
+        }
+
+        // Функция для сохранения данных игрока на сервере
+        async function savePlayerData() {
+            await fetch(`http://localhost:3000/player/${playerId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ balance, income, items: [] })
+            });
+        }
+
         function incrementBalance() {
             balance += 1;
             document.getElementById('balance').textContent = balance;
             createParticleEffect(event.clientX, event.clientY);
+            savePlayerData();
         }
 
         function handleTouchStart() {
@@ -283,6 +304,7 @@
                 document.getElementById('balance').textContent = balance;
                 document.getElementById('income').textContent = income;
                 alert('Покупка успешна! Ваш новый доход: ' + income + ' монет/час.');
+                savePlayerData();
             } else {
                 alert('Недостаточно монет для покупки.');
             }
@@ -293,8 +315,11 @@
             const incomePerInterval = income / (60 * 60 / 3); // доход за 3 секунды
             balance += incomePerInterval;
             document.getElementById('balance').textContent = Math.floor(balance); // округляем баланс до целого числа
+            savePlayerData();
         }, 3000); // каждые 3 секунды
 
+        // Получение данных игрока при загрузке страницы
+        getPlayerData();
     </script>
 </body>
 </html>
