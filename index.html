@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добро пожаловать в игру!</h1>
+    <p>Выберите действие:</p>
+    <button onclick="sendAction('fight')">Сразиться</button>
+    <button onclick="sendAction('balance')">Проверить баланс</button>
+    <button onclick="sendAction('shop')">Магазин</button>
+
+    <script>
+        function sendAction(action) {
+            Telegram.WebApp.sendData(action); // отправка данных обратно в бота
+        }
+        
+        Telegram.WebApp.ready(); // уведомление Telegram, что приложение готово к работе
+    </script>
+</body>
+</html>
