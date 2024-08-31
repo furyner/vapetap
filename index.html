@@ -31,7 +31,7 @@
         }
         .tap-object {
             width: 200px;
-            height: 200px;
+            height: 300px; /* Увеличил высоту для более точного позиционирования */
             cursor: pointer;
             user-select: none;
             transition: transform 0.1s ease;
@@ -61,7 +61,9 @@
         }
         .smoke {
             position: absolute;
-            top: -40px; /* Исходная позиция дыма относительно одноразки */
+            top: -20px; /* Начальная позиция дыма - чуть выше одноразки */
+            left: 50%;
+            transform: translateX(-50%);
             width: 20px;
             height: 20px;
             background: rgba(255, 255, 255, 0.7);
@@ -83,7 +85,9 @@
 </head>
 <body>
     <div class="balance">Баланс: <span id="balance">0</span> монет</div>
-    <img src="1.png" class="tap-object" alt="Disposable Vape" onclick="emitSmoke(event)">
+    <div class="tap-object-wrapper">
+        <img src="1.png" class="tap-object" alt="Disposable Vape" onclick="emitSmoke(event)">
+    </div>
 
     <script>
         let balance = 0;
@@ -124,9 +128,9 @@
             incrementBalance();
             const smoke = document.createElement('div');
             smoke.classList.add('smoke');
-            // Позиционируем дым по центру верхней части одноразки
-            smoke.style.left = `${event.clientX - 10}px`;
-            smoke.style.top = `${event.clientY - 60}px`;
+            const vapeRect = tapObject.getBoundingClientRect(); // Получаем размеры и позицию одноразки
+            smoke.style.left = `${vapeRect.left + vapeRect.width / 2}px`;
+            smoke.style.top = `${vapeRect.top - 20}px`; // Делаем стартовую позицию чуть выше одноразки
             document.body.appendChild(smoke);
 
             smoke.addEventListener('animationend', () => {
