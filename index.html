@@ -4,32 +4,98 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Web App</title>
+    <title>Simple Tap Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            overflow: hidden;
         }
-        button {
+        .balance {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
             padding: 10px 20px;
-            font-size: 18px;
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+        .tap-object {
+            width: 200px;
+            height: 200px;
+            background-color: #ff6f61;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        .tap-object:hover {
+            background-color: #ff4e42;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .tap-object:active {
+            transform: scale(0.9);
+            background-color: #ff3829;
+        }
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffcd3c;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particle-animation 0.8s forwards;
+        }
+        @keyframes particle-animation {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Добро пожаловать в игру!</h1>
-    <p>Выберите действие:</p>
-    <button onclick="sendAction('fight')">Сразиться</button>
-    <button onclick="sendAction('balance')">Проверить баланс</button>
-    <button onclick="sendAction('shop')">Магазин</button>
+    <div class="balance">Баланс: <span id="balance">0</span> монет</div>
+    <div class="tap-object" onclick="incrementBalance()">Тыкай здесь</div>
 
     <script>
-        function sendAction(action) {
-            Telegram.WebApp.sendData(action); // отправка данных обратно в бота
+        let balance = 0;
+
+        function incrementBalance() {
+            balance += 1;
+            document.getElementById('balance').textContent = balance;
+            createParticleEffect(event.clientX, event.clientY);
         }
-        
-        Telegram.WebApp.ready(); // уведомление Telegram, что приложение готово к работе
+
+        function createParticleEffect(x, y) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            document.body.appendChild(particle);
+
+            particle.addEventListener('animationend', () => {
+                particle.remove();
+            });
+        }
     </script>
 </body>
 </html>
